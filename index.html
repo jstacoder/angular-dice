@@ -1,0 +1,91 @@
+<html ng-app="testApp">
+
+    <head>
+        <link rel="stylesheet" href="bootstrap.css" />
+        <style>
+                .fade-in.ng-enter-stagger {
+                    -webkit-transition-delay: 200ms;
+                    transition-delay:200ms;
+
+                    -webkit-transition-duration: 0;
+                    transition-duration: 0;
+                }
+                .die {
+                    font-size:1.5em;
+                    font-family:monospace;
+                    max-height:25px;
+                    max-width:25px;
+                    padding: 20px;
+                    border:1px solid grey;
+                    border-radius:5px;
+                    cursor:pointer;
+                }
+                .die {
+                    margin-left:10px;
+                    margin-right:10px;
+                }
+                .block {
+                    display:block;
+                }
+                .inline {
+                    display:inline;
+                }
+                .inline-block {
+                    display:inline-block;
+                }
+        </style>
+    </head>
+    <body>
+        <div
+            ng-controller="TestCtrl as ctrl"
+         class="container">
+            Currently Rolling: <h3 ng-bind="ctrl.current.player.name"></h3>
+            Current Score: <h4 ng-bind="ctrl.current.player.score+ctrl.current.player.tempscore"></h4>
+            <div ng-repeat="item in ctrl.dice track by $index" class="inline-block fade-in">
+                Die: <span ng-bind="item.dienum" ></span> <div class="{{ item.held ? 'held die block bg-danger' : 'die block'}}"><p ng-bind="item.value" ng-click="item.held=!item.held"></p></div><span ng-show="false">Held</span>
+            </div>
+            <hr />
+            <div class="input-group">
+            <span class=input-group-btn>
+                <button class="btn btn-default" ng-click="ctrl.roll()">roll</button>
+                <button class="btn btn-default" ng-click="ctrl.reset()">reset</button>
+            </span>
+                <input ng-model="ctrl.new.name"  class="form-control"/>
+                <span class="input-group-btn">
+                        <button class="btn btn-default" ng-click="ctrl.addPlayer(ctrl.new.name)">add</button>
+                        <button class="btn btn-default" ng-click="ctrl.switchPlayer(ctrl.curr.player)">switch</button>
+                </span>
+            </div>
+            <hr />
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Score</th>
+                    </tr>                    
+                </thead>
+                <tbody>
+                    <tr 
+                        ng-repeat="player in ctrl.players" 
+                    >
+                        <td 
+                            ng-bind="player.name"
+                            ng-click="ctrl.switchPlayer(player)"
+                            ></td>
+                        <td
+                            ng-bind="player.score"
+                       ></td>
+                       <td ng-bind="player.tempscore"
+                       ></td>
+                </tr>
+                </tbody>
+            </table>
+            <span ng-repeat="held in ctrl.saved track by $index" ng-bind="held.value" class="die inline-block"></span>
+    
+        </div>
+    <script src="angular.js"></script>
+    <script src="angular-animate.js"></script>
+    <script src="newapp.js"></script>
+    </body>
+</html>
+    

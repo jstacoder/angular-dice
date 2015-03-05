@@ -1,0 +1,87 @@
+ <div
+            ng-controller="PickCtrl as ctrl"
+     >
+            <div class=row>
+                <div class="col-md-2">
+                        Currently Rolling:
+                </div>
+                <div class="col-md-9">
+                    <h3 ng-bind="ctrl.current.player.name"></h3>
+                </div>
+            </div>
+            <div class=row>
+                <div class=col-md-2>
+                        Current Score:
+                </div>
+                <div class=col-md-9>
+                    <h4 ng-bind="ctrl.current.player.score+ctrl.current.player.tempscore+ctrl.current.player.realscore"></h4>
+                </div>
+            </div>
+            <div class=row>
+                <div class="col-md-offset-2 col-md-6">
+                    <div class=row>
+                        <div ng-repeat="item in ctrl.dice track by $index" class="col-md-2 inline-block fade-in">
+                            Die: <span ng-bind="item.dienum" ></span>
+                        <div
+                            class="{{ item.held ? 'held die block bg-danger' : 'die block'}}"
+                            ng-click="ctrl.hold(item)"
+                        >
+                        <p
+                            class="dienum"
+                            ng-bind="item.value"
+                        >
+                        </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                <span ng-show="false">Held</span>
+            </div>
+            <hr />
+            <div class="input-group">
+                <span class="input-group-btn">
+                        <button class="btn btn-default" ng-click="ctrl.addPlayer(ctrl.new.name)">add</button>
+                </span>
+                <input ng-model="ctrl.new.name"  class="form-control"/>
+                <span class="input-group-btn">
+                        <button class="btn btn-default" ng-click="ctrl.switchPlayer(ctrl.curr.player)">switch</button>
+                </span>
+            </div>
+            <button class="btn btn-default" ng-click="ctrl.addCompPlayer()">add comp</button>
+            <span ng-bind="ctrl.compPlayers"></span>
+            <hr />
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        ng-repeat="player in ctrl.players"
+                    >
+                        <td
+                            ng-bind="player.name"
+                            ng-click="ctrl.switchPlayer(player)"
+                            ></td>
+                        <td
+                            ng-bind="player.realscore"
+                       ></td>
+                </tr>
+                    <tr
+                        ng-repeat="comp in ctrl.compPlayers"
+                    >
+                        <td
+                            ng-bind="comp.name"
+                            ng-click="ctrl.switchPlayer(comp)"
+                            ></td>
+                        <td
+                            ng-bind="comp.score"
+                       ></td>
+                </tr>
+                </tbody>
+            </table>
+            <span ng-repeat="held in ctrl.saved track by $index" ng-bind="held.value" class="die inline-block"></span>
+
+        </div>

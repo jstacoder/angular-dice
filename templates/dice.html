@@ -1,0 +1,128 @@
+ <div ng-controller="DiceCtrl as ctrl" >
+    <div class=row>
+        <alert
+            ng-repeat="alert in ctrl.alerts" 
+            class="alert alert-{{alert.type}}" 
+            close="ctrl.close()"
+            ng-bind="alert.msg"
+        >
+        </alert>
+        <button ng-click="ctrl.addAlert('warning','ahhh msgs')">add</button>
+        
+        <div class="col-md-2">
+                <p class=lead>Currently Rolling:</p>
+        </div>
+        <div class="col-md-9">
+                <p class=lead><small ng-bind="ctrl.current.player.name"></small></p>
+                </div>
+            </div>
+            <div class=row>
+                <div class=col-md-2>
+                        Current Score:
+                </div>
+                <div class=col-md-9>
+                    <h4 ng-bind="ctrl.current.player.score+ctrl.current.player.tempscore+ctrl.current.player.realscore"></h4>
+                </div>
+            </div>
+            <div class=row>
+                <div class="col-md-offset-2 col-md-6">
+                    <div class=row>
+                        <div ng-repeat="item in ctrl.dice track by $index" class="col-md-2 inline-block fade-in">
+                            Die: <span ng-bind="item.dienum" ></span>
+                        <div
+                            class="{{ item.held ? 'held die block bg-danger' : 'die block'}}"
+                            ng-click="ctrl.hold(item)"
+                        >
+                        <p
+                            class="dienum"
+                            ng-bind="item.value"
+                        >
+                        </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                <span ng-show="false">Held</span>
+            </div>
+            <hr />
+            <div class="input-group">
+            <span class=input-group-btn>
+                <button class="btn btn-default" ng-click="ctrl.roll()">roll</button>
+                <button class="btn btn-default" ng-click="ctrl.reset(false)">reset</button>
+                <button ng-click="ctrl.reset(true)" class="btn btn-default {{ ctrl.disableClass(ctrl.current.player.tempscore+ctrl.current.player.score+ctrl.current.player.realscore) }}">keep score</button>
+            </span>
+                <input ng-model="ctrl.new.name"  class="form-control"/>
+                <span class="input-group-btn">
+                        <button class="btn btn-default" ng-click="ctrl.addPlayer(ctrl.new.name)">add</button>
+                        <button class="btn btn-default" ng-click="ctrl.switchPlayer(ctrl.curr.player)">switch</button>
+                </span>
+            </div>
+            <hr />
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        ng-repeat="player in ctrl.players"
+                    >
+                        <td
+                            ng-bind="player.name"
+                            ng-click="ctrl.switchPlayer(player)"
+                            ></td>
+                        <td
+                            ng-bind="player.realscore"
+                       ></td>
+                </tr>
+                </tbody>
+            </table>
+            <span ng-repeat="held in ctrl.saved track by $index" ng-bind="held.value" class="die inline-block"></span>
+
+            <span ng-bind="ctrl.currentRoll"></span>
+            <br />
+            <span ng-repeat="die in currentChoice.result track by $index" ng-bind="die"></span>
+            <button ng-click="ctrl.compTurn({'name':'hank','score':100})">comp</button>
+        </div>
+        <div ng-controller="ModalDemoCtrl">
+                <script type="text/ng-template" id="myasidewindow.html">
+                        <div class="aside fade" tabindex="-1" role="dialog"
+                            ng-class="{'in':animate}"
+                            ng-style="{'z-index':1050 + index*10,display: 'block'}"
+                            ng-click="close($event)">
+                            <div class="aside-dialog">
+                                <div class="aside-content" ng-transclude=""></div>
+                            </div>
+                        </div>
+                </script>
+                <script type="text/ng-template" id="myModalContent2.html">
+                    <div>
+                        <div class="aside-header">
+                            <h4 class="aside-title"></h4>
+                        </div>
+                        <div class="aside-body"></div>
+                        <div class="aside-footer"></div>
+                    </div>
+                </script>
+                <script type="text/ng-template" id="myModalContent.html">
+
+            <div class="modal-header">
+                <h4 class="modal-title">Modal title</h4>
+            </div>
+            <div class="modal-body" ng-bind="ctrl.modal.text">
+
+            </div>
+            <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="ok()">OK</button>
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+            </div>
+    </script>
+    
+    <button class="btn btn-default" ng-click="ctrl.open()">Open me!</button>
+    <button class="btn btn-default" ng-click="ctrl.open('lg')">Large modal</button>
+    <button class="btn btn-default" ng-click="ctrl.open('sm')">Small modal</button>
+    <div ng-show="selected">Selection from a modal: {{ selected }}</div>
+</div>
+
