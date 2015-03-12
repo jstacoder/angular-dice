@@ -4,7 +4,13 @@
   var intt = undefined;
   var app;
 
-  app = angular.module('testApp', ['ngAnimate', 'ngRoute','ui.bootstrap','dice.factory.app','dice.controllers.app']);
+  app = angular.module('testApp', 
+          [
+               'ngCookies','mgcrea.ngStrap','ngAnimate', 
+               'ngRoute','dice.factory.app','dice.controllers.app',
+               'ui.bootstrap.modal','ngSanitize','ngResource'
+          ]
+  );
 
   app.config([
     '$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {

@@ -1,6 +1,4 @@
 <?php
-#TODO: check_for_doubles,strait,6,5,4,3 of a kind and 1's or 5's
-#TODO: score above
 require_once 'phlask.php';
 
 $app = new Phlask('dieApp',false,false);
@@ -187,12 +185,8 @@ $clean_ai_choice = function($roll,$choice){
         }
         return $rtn;
 };
-
-
 $n = new BaseAIChooser($choose_roll);
 $get_ai_choice = $n->get_choice;
-
-
 $ai_choice = function($app) use ($get_ai_choice,$scoreRoll,$clean_ai_choice){
     if(strrpos($app->qs->roll,'+')){
         $roll = explode('+',$app->qs->roll);
@@ -216,7 +210,6 @@ $ai_choice = function($app) use ($get_ai_choice,$scoreRoll,$clean_ai_choice){
     ));
 
 };
-$app->route('/dice_choice',$ai_choice);
 $get_score = function($app) use ($scoreRoll){
     $n_array = array();
     $nums = $app->qs->held;
@@ -239,8 +232,8 @@ $get_score = function($app) use ($scoreRoll){
                         )
     );
 };
+$app->route('/dice_choice',$ai_choice);
 $app->route('/score',$get_score);
-
 $index = function($app){
     return $app->render('index.html');
 };

@@ -1,20 +1,32 @@
+<style>
+    .label {
+        padding : 0.4em 0.4em 0.4em 0.4em;
+    }
+    span.label {
+    }
+</style>
  <div
             ng-controller="PickCtrl as ctrl"
      >
-            <div class=row>
-                <div class="col-md-2">
-                        Currently Rolling:
-                </div>
-                <div class="col-md-9">
-                    <h3 ng-bind="ctrl.current.player.name"></h3>
-                </div>
-            </div>
-            <div class=row>
-                <div class=col-md-2>
-                        Current Score:
-                </div>
-                <div class=col-md-9>
-                    <h4 ng-bind="ctrl.current.player.score+ctrl.current.player.tempscore+ctrl.current.player.realscore"></h4>
+            <div class="modal fade" modal="showModal" close="ctrl.cancel()">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4>Modal Dialog</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form name="addForm" class="form">
+                                <div class="form-group">
+                                    <label>name</label>
+                                    <input class="form-control" name="new_player_name" ng-model="ctrl.newplayer.name" />
+                                </div>
+                            </form> 
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-success" ng-click="addPlayer(ctrl.newplayer.name)">add</button>
+                            <button class="btn" ng-click="ctrl.cancel()">Cancel</button>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class=row>
@@ -22,66 +34,81 @@
                     <div class=row>
                         <div ng-repeat="item in ctrl.dice track by $index" class="col-md-2 inline-block fade-in">
                             Die: <span ng-bind="item.dienum" ></span>
-                        <div
-                            class="{{ item.held ? 'held die block bg-danger' : 'die block'}}"
-                            ng-click="ctrl.hold(item)"
-                        >
-                        <p
-                            class="dienum"
-                            ng-bind="item.value"
-                        >
-                        </p>
+                              <div
+                                class="{{ item.held ? 'held die block bg-danger' : 'die block'}}"
+                                ng-click="ctrl.hold(item)"
+                              >
+                                <p
+                                  class="dienum"
+                                  ng-bind="item.value"
+                                >
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
                 <span ng-show="false">Held</span>
             </div>
             <hr />
-            <div class="input-group">
-                <span class="input-group-btn">
-                        <button class="btn btn-default" ng-click="ctrl.addPlayer(ctrl.new.name)">add</button>
-                </span>
-                <input ng-model="ctrl.new.name"  class="form-control"/>
-                <span class="input-group-btn">
-                        <button class="btn btn-default" ng-click="ctrl.switchPlayer(ctrl.curr.player)">switch</button>
-                </span>
+            <div class="btn-group">
+                    <button class="btn btn-default" ng-click="ctrl.open()">add</button>
+                    <button class="btn btn-default" ng-click="ctrl.addCompPlayer()">add comp</button>
+                    <button class="btn btn-danger" ng-click="ctrl.clearStorage()">Reset Players</button>
+                    <!--<input ng-model="ctrl.new.name"  class="form-control"/>-->
             </div>
-            <button class="btn btn-default" ng-click="ctrl.addCompPlayer()">add comp</button>
             <span ng-bind="ctrl.compPlayers"></span>
             <hr />
-            <table class="table table-bordered table-hover">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Score</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr
-                        ng-repeat="player in ctrl.players"
-                    >
-                        <td
-                            ng-bind="player.name"
-                            ng-click="ctrl.switchPlayer(player)"
-                            ></td>
-                        <td
-                            ng-bind="player.realscore"
-                       ></td>
-                </tr>
-                    <tr
-                        ng-repeat="comp in ctrl.compPlayers"
-                    >
-                        <td
-                            ng-bind="comp.name"
-                            ng-click="ctrl.switchPlayer(comp)"
-                            ></td>
-                        <td
-                            ng-bind="comp.score"
-                       ></td>
-                </tr>
+            <div class=row>
+                <div class=col-md-6>
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <p>People playing</p>
+                            <tr>
+                                <th>Name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                                ng-repeat="player in ctrl.players"
+                            >
+                                <td
+                                    ng-bind="player.name"
+                                    ng-click="ctrl.switchPlayer(player)"
+                                    ></td>
+                            </tr>
+                            <tr
+                                ng-repeat="comp in ctrl.compPlayers"
+                            >
+                                <td
+                                    ng-bind="comp.name"
+                                    ng-click="ctrl.switchPlayer(comp)"
+                                    ></td>
+                        </tr>
                 </tbody>
             </table>
-            <span ng-repeat="held in ctrl.saved track by $index" ng-bind="held.value" class="die inline-block"></span>
-
         </div>
+        <div class=col-md-5>
+            <div class=list-group>
+                <a
+                    ng-repeat="player in ctrl.allplayers"
+                    class=list-group-item
+                >
+                <span 
+                    class="label label-danger pull-right"
+                    ng-click="ctrl.removeFromUsers(player.name)"
+                    ng-show="player"
+                >
+                    <span 
+                        class="pull-right glyphicon glyphicon-remove"
+                    ></span>
+                </span>
+                    <p
+                        ng-click="ctrl.addPlayer(player.name)" 
+                        ng-bind="player.name"
+                    >
+                    </p>
+                </a>
+            </div>
+        </div>
+    </div>
+ </div>

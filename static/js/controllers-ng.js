@@ -1,7 +1,17 @@
 (function() {
   'use strict';
-    var app = angular.module('dice.controllers.app',['dice.factory.app','service.app']);
+    var app = angular.module('dice.controllers.app',['dice.factory.app','service.app','ui.bootstrap.modal']);
 
+    app.controller('ModalCtrl',['$scope','$rootScope','turn',function($scope,$rootScope,turn){
+        var self = this;
+        self.new_player = {};
+        self.new_player.name = '';
+        self.addPlayer = function() {
+            console.log('adding ', self.new_player.name);
+            turn.addPlayer(self.new_player.name);
+
+      };
+    }]);
     app.controller('NavCtrl',['navLinks',function(navLinks){
       var self = this;
         navLinks.addLink('Home','/');
@@ -9,16 +19,16 @@
         navLinks.addLink('Scores','/scores');
         navLinks.addLink('Help','/help');
         navLinks.addDropDown('Testdd',[
-          {text:'link1',url:'ccx'},
-          {text:'link2',url:'cccom'},
-          {text:'link3',url:'ccm'},
-          {text:'link4',url:'cicom'},
+          {text:'link1',href:'ccx'},
+          {text:'link2',href:'cccom'},
+          {text:'link3',href:'ccm'},
+          {text:'link4',href:'cicom'},
       ]);
       navLinks.addDropDown('Account Info',[
-          {text:'Profile',url:'ccxom'},
-          {text:'Settings',url:'ccccom'},
-          {text:'Management',url:'cccom'},
-          {text:'Logout',url:'cicom'},
+          {text:'Profile',href:'ccxom'},
+          {text:'Settings',href:'ccccom'},
+          {text:'Management',href:'cccom'},
+          {text:'Logout',href:'cicom'},
       ]);
       navLinks.setActive(0);
       self.navLinks = navLinks.getLinks(true);
@@ -26,11 +36,87 @@
     }]);
 
     app.controller('PickCtrl', [
-    'navLinks','turn','comp', '$scope',function(navLinks,turn,comp,$scope) {
-      var self;
-      self = this;
+    'User','$route','navLinks','turn','comp','$scope','$rootScope','users','$q','storageService',
+    function(User,$route,navLinks,turn,comp,$scope,$rootScope,users,$q,storage) {
+      navLinks.setActive(0);
+      var self = this;
+      self.getAllUsers = function(){
+            return $q.when(users).then(function(res){
+                    self.allplayers = res;
+                    if(storage.length){
+                        for(var key in storage.keys()){
+                            var playerdata = storage.get(storage.keys()[key]);
+                            if(playerdata.split('>><<').length == 2){
+                                var score = playerdata.split('>><<')[1],
+                                name = playerdata.split('>><<')[0];
+                            }else{
+                                var score = 0,
+                                    name = playerdata;
+                            }
+                            self.players.push({name :name,score:score});
+                        }
+                    };
+            });
+      };
+      self.clearStorage = function(){
+            storage.clear();
+            turn.clearAll();
+            self.players = turn.players;
+      };
+      self.removeFromUsers = function(name){
+        var found = false,
+        itmIdx = -1;
+        angular.forEach(self.players,function(itm,idx){
+           if(angular.equals(name,itm.name)){
+                found = true;
+                itmIdx = idx;
+           }
+        });
+        if(found){
+            self.players.splice(itmIdx,1);
+            storage.remove('key:'+name);
+        }
+      };
+      self.addToUsers = function(name){
+          var user = new User();
+          user.name = name;
+          user.selected = true;
+          user.$save();
+          return users.push({name:name,score:0,selected:true});
+      };
+      self.getAllUsers();
+      self.newplayer = '';
+      self.addPlayer = function(){
+            console.log('adding ',self.newplayer);
+    };
+    self.open = function() {
+            $scope.showModal = true;
+    };
+        self.ok = function() {
+            $scope.showModal = false;
+        };
+        self.cancel = function() {
+            $scope.showModal = false;
+        };
+        $scope.$on('modal.need.open',function(){
+            $scope.showModal = true;
+            $scope.$apply();
+        });
+        $scope.showModal = false;
       self["new"] = {
         name: ''
+      };
+      self.resetScopePlayer = function(){
+              $rootScope.new_player = {
+                    name:'',
+                    score:0
+                };              
+      };
+      self.resetScopePlayer();
+
+      self.launchModal = function(){
+            //$modal(self.modals[0]);
+            $scope.showModal = true;
       };
 
       self.compPlayers = comp._get();
@@ -39,12 +125,26 @@
       };
 
       self.addCompPlayer = function(){
+
         comp.add();
+        var player = comp.getLast();
+        self.addPlayer(player.name);
         return self.updateComp();
       };
       self.addPlayer = function(name) {
         turn.addPlayer(name);
+        if(!self.allplayers.filter(function(player){ return player.name == name; }).length){
+            self.addToUsers(name);   
+        }
+        storage.add('key:'+name,name);
         return self["new"].name = '';
+      };
+      $rootScope.addPlayer = function(name){
+          console.log('adding ',name);
+          self.addPlayer(name);
+          $scope.showModal = false;
+          self.newplayer.name = '';
+          name = '';
       };
       self.switchPlayer = function() {
         turn.changeTurn();
@@ -72,67 +172,62 @@
   ]);
 
 
-app.controller('ModalDemoCtrl', function ($rootScope,$scope, $modal, $log,turn) {
-
-      var scope = {};
-      scope.items = ['item1', 'item2', 'item3',turn.getCurrent()];
-
-        $scope.open = function (size) {
-            
-            var modalInstance = $modal.open({
-                templateUrl: 'myModalContent.html',
-                //windowTemplateUrl: 'myasidewindow.html',
-                controller: 'ModalInstanceCtrl',
-                backdrop:true,
-                scope: scope,
-                size: size,
-                resolve: {
-                    items: function () {
-                        return $scope.items;
-                    }
-                }
-            });
-            
-            modalInstance.result.then(function (selectedItem) {
-                $scope.selected = selectedItem;
-            }, function () {
-                $log.info('Modal dismissed at: ' + new Date());
-            });
-        };
-});
-
-// Please note that $modalInstance represents a modal window (instance) dependency.
-// // // It is not the same as the $modal service used above.
-// //
-app.controller('ModalInstanceCtrl', function ($scope,turn) {
-     var items = $scope.items || [];
-     $scope.selected = {
-         item: items.length ? items[0] : ''
-      };
-
-      $scope.ok = function () {
-          $scope.close($scope.selected.item);
-      };
-      $scope.cancel = function () {
-          $scope.dismiss('cancel');
-      };
-});
-
-
   app.controller('DiceCtrl', [
-    'navLinks','$location','$modal','$log','$timeout','$rootScope', 'disabler', 'Die', 'roll', 'turn', 'choice', 'score', '$scope','currentChoice','$interval', function(navLinks,$location,$modal,$log,$timeout,$rootScope, dis, Die, roll, turn, choice, score, $scope,cc,$interval) {
+    '$q','navLinks','$location','$log','$timeout',
+    '$rootScope', 'disabler', 'Die', 'roll', 'turn', 
+    'choice', 'score', '$scope','currentChoice',
+    '$interval','$modal', 
+    function DiceCtrl(
+        $q,navLinks,$location,$log,$timeout,
+        $rootScope, dis, Die, roll, turn, 
+        choice, score, $scope,cc,$interval,$modal
+    ){
+      navLinks.setActive(1);
       var self;
       self = this;
-      console.log($modal);
-      console.dir($modal);
-      $modal.open({
-        templateUrl: 'myModalContent.html',
-        //windowTemplateUrl: 'myasidewindow.html'
+      $scope.modals = [];
+      $scope.modals.push({});
+      $scope.modals[0].content = 'Som,e modal text Batch <h2>honkey</h2>';
+      $scope.modals[0].title = 'My title!!';
 
+      $rootScope.$on('player.change',function(evt,player){
+            if(!player.human()){
+                return self.compTurn(player);
+            }
       });
-
+      $scope.modals.push(
+        {
+            content:'A newewisj to,e ',
+            title:'msdlvkjnsdnkvs'
+        }
+      );
+      $scope.modals.push(
+        {
+            content:'python',
+            title:'flask'
+        }
+      );
+      $scope.modals.push(
+        {
+            content:'a ffffff',
+            title:'sugfactcvatysa'
+        }
+      );
+      self.makeModal = function(content,title){
+        var modal = {};
+        modal.content = content; //#'Som,e modal text Batch <h2>honkey</h2>';
+        modal.title = title;
+        $scope.modals.push(modal);
+      };
+      self.getModal = function(cfg){
+            if(angular.isNumber(parseInt(cfg))){
+                return $scope.modals[cfg];
+            }else{
+                return cfg;
+            }
+      };
         $scope.$on('choice.made',function(e,c){
-                console.log(c);
+                console.log('Logging choice: ',c);
         });
 
       $rootScope.$on('choice_made',function(e,data){
@@ -147,17 +242,24 @@ app.controller('ModalInstanceCtrl', function ($scope,turn) {
         }
       });
       self.dice = [];
-      $scope.$watch(self.dice,function(o,n,x){
-            console.log('watch xx: ',o,n,x);
+      $scope.dice = self.dice;
+      $scope.$watch(function(){return self.dice;},function(o,n,x){
+            console.log('watch xx: ',arguments);
 
+      });
+      $scope.$watch(function(){return self.current.player.score+self.current.player.tempScore+self.current.player.realScore;},function(){
+        console.log('watch2: ',arguments);
       });
       self.savedNums = [];
       self.saved = [];
       self["new"] = {
         name: ''
       };
-      self.holdByNum = function(num){
+      self.holdByNum = function(num,rtn){
             self.hold(self.dice[num]);
+            if(rtn){
+                return self.dice[num].value;
+            }
       };
       $rootScope.currentplayer = {};
       $rootScope.currentChoice = {};
@@ -170,6 +272,7 @@ app.controller('ModalInstanceCtrl', function ($scope,turn) {
       self.held = false;
       self.updateChoice = function(){
         self.choice = $rootScope.currentChoice;
+        $scope.dice = self.dice;
       };
       self.updateChoice();
       self.toggleCK = function() {
@@ -178,7 +281,7 @@ app.controller('ModalInstanceCtrl', function ($scope,turn) {
       };
       self.updateCurrent = function() {
         return self.current = {
-          player: turn.getCurrent()
+            player: turn.getCurrent() || {name:'temp',score:0}
         };
       };
       self.updateCurrent();
@@ -210,9 +313,10 @@ app.controller('ModalInstanceCtrl', function ($scope,turn) {
       };
       self.makeCurr = function(player) {
         self.curr.player = player.name;
-        return self.curr.score = player.score;
+        self.curr.score = player.score;
       };
       self.getCurrent = function() {
+        self.updateCurrent();
         return self.current.player;
       };
       self.hold = function(die) {
@@ -227,6 +331,7 @@ app.controller('ModalInstanceCtrl', function ($scope,turn) {
         score(self.holding, self.current.player, 'hold');
         choice(self.currentRoll);
         self.updateChoice();
+        $scope.dice = self.dice;
       };
       self.toggleCK = function() {
           return this.canKeep = !this.canKeep;
@@ -241,8 +346,15 @@ app.controller('ModalInstanceCtrl', function ($scope,turn) {
 
       self.reset = function(keep) {
         if (keep) {
-          self.current.player.realscore += parseInt(self.current.player.score);
-          self.current.player.realscore += parseInt(self.current.player.tempscore);
+          var addScore = parseInt(self.current.player.score) + parseInt(self.current.player.tempscore);
+          self.current.player.realscore += addScore;
+          //self.current.player.realscore += parseInt(self.current.player.tempscore);
+          var title = 'Keeping points';
+          $scope.test = function(){
+            return 'this is a test';
+          };
+          var txt = self.current.player.name + ',<br/>This turm you kept '+addScore+' points,<br/>giving you {{ test() }} a total of:<br/><p class=lead>'+self.current.player.realscore+' points</p>';
+          $modal({scope:$scope,title:title,content:txt,show:true,html:true});
           $rootScope.currentplayer = self.current.player
         }
         self.current.player.score = 0;
@@ -276,14 +388,16 @@ app.controller('ModalInstanceCtrl', function ($scope,turn) {
       };
       self.alerts = [];
 
-      self.addAlert = function(type,msg){
+      self.addAlert = function(type,msg,nonAuto){
             self.alerts.push(
                 {
                     type:type,
                     msg:msg
                 }
             );
-            $timeout(function(){ self.alerts = [];},2500);
+            if (!nonAuto) {
+              $timeout(function(){ self.alerts.splice(self.alerts.length-1,1);},2500);
+            }            
       };
       self.addFailure = function(msg){
           $timeout(function(){
@@ -306,32 +420,54 @@ app.controller('ModalInstanceCtrl', function ($scope,turn) {
                 die.value = num;
             }, 1500);
       };
-      self.compTurn = function(player){
-          $scope.current = {};
-          $scope.current.player = player.name;
-          $scope.current.score = player.score;
-          var thisTurn = false;
-          self.roll();
-          $rootScope.$on('choice.made',function(e,data){
-            if(!thisTurn){
-                thisTurn = true;
-                console.log('choice ',data);
-                angular.forEach(data.clean_choice,function(itm,idx){
-                    if(itm!=0){
-                        $timeout(function(){
-                            self.holdByNum(idx);
-                        },1800);
+      self.rolling = function(continuing){
+        var thisTurn = false;
+        $timeout(function(){
+            $q.when(self.roll()).then(function(res){
+                if(!thisTurn){
+                    thisTurn = true;
+                    console.log('choice ',res);
+                    if(res){
                     }
-                });
-            }
-          });
-          $scope.$apply();
+                    angular.forEach($rootScope.currentChoice.clean_choice,function(itm,idx){
+                        if(itm!=0){
+                            $timeout(function(){
+                                self.holdByNum(idx);
+                                $scope.$apply();
+                            },1600);
+                        }
+                        });
+                }
+                return res;
+            }).then(function(res){
+                    if(res){
+                        var modal = $modal({title:'Holding',content:res.join(' '),show:true});
+                        modal.$promise.then(function(){
+                            
+                            $timeout(function(){
+                                console.log(modal);
+                                $timeout(function(){
+                                  self.rolling(true);
+                                },1000);
+                                modal.hide();
+                             },1500)
+                        });
+                    }    
+            });
+        },2200);
+    };    
+          self.compTurn = function(player){
+              var def = $q.defer();
+              $scope.current = {};
+              $scope.current.player = player.name;
+              $scope.current.score = player.score;
+              var thisTurn = false;
+              self.rolling();
       };
       self.roll = function() {
-          console.log($location);
-          console.dir($location);
-        var tmp;
-        console.dir(self);
+
+        var tmp,
+        def = $q.defer();
         //self.choice = $rootScope.currentChoice;
         self.held = false;
         self.updateSavedNums();
@@ -360,9 +496,11 @@ app.controller('ModalInstanceCtrl', function ($scope,turn) {
         //self.choice = $rootScope.currentChoice;
         choice(self.currentRoll).then(function(res){
             self.checkTurnEnd(self.currentRoll,$rootScope.currentChoice.result);
+            def.resolve($rootScope.currentChoice.result);
         });
         self.updateChoice();
         score(self.holding, self.current.player, 'hold');
+        return def.promise;
       };
       self.checkTurnEnd = function(current,serverChoice){
           $log.log('checking for end');
@@ -381,8 +519,15 @@ app.controller('ModalInstanceCtrl', function ($scope,turn) {
                         intt = undefined;
                    };
                    self.addFailure('Turn over');
+                   $timeout(function(){self.compTurn();},2000);
                }
         };
+      var counter = 0;
+      $interval(function(){
+          counter += 1;
+          console.log('polling, counter :'+counter);
+          
+      },5000);
       return self.reset();
     }]);
 }).call(this);

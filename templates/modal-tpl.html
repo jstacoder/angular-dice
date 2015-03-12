@@ -1,0 +1,25 @@
+<div class="modal" tabindex="-1" role="dialog" aria-hidden="true" ng-controller="ModalCtrl as ctrl">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" ng-show="title">
+                <button type="button" class="close" aria-label="Close" ng-click="$hide()">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" ng-bind="title"></h4>\
+            </div>
+            <div class="modal-body">
+            
+            <div class="form-group">
+                <form name="addForm" class="form">
+                <label>name</label>
+                <input class="form-control" name="new_player_name" ng-model="ctrl.new_player.name" />
+                </div><button class="btn btn-small btn-primary" ng-click="ctrl.addPlayer()">add</button>
+                <div ng-bind="ctrl.new_player|json"></div>
+                </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" ng-click="$hide()">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

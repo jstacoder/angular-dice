@@ -25,6 +25,37 @@ app.service('testService',function(){
         };
 });
 
+app.service('storageService',['$window',function($window){
+    var self = this,
+
+    storage = $window.localStorage;
+
+    self.add = function(key,value){
+        storage.setItem(key,value);    
+    };
+    self.remove = function(key){
+        return storage.removeItem(key);
+    };
+    self.get = function(key){
+        return storage.getItem(key);        
+    };
+    self.getList = function(key){
+        return storage.getItem(key).split(',');
+    };
+    self.length = function(){
+        return storage.length;
+    };
+    self.clear = function(){
+        storage.clear();
+    };
+    self.keys = function(){
+        var res = [];
+        angular.forEach(storage,function(itm,key){
+            res.push(key);
+        });
+        return res;
+    };
+}]);
 app.service('navLinks',[function(){
         var self = this;
 
@@ -32,10 +63,13 @@ app.service('navLinks',[function(){
         self.dropdowns = [];
 
         self.setActive = function(link){
-          self.links[link].active = true;
+            self.links.map(function(itm){
+                itm.active = false;
+            });
+            self.links[link].active = true;
         };
         self.addLink = function(text,url){
-                self.links.push({text:text,url:url,active:false,routeMatch:text});
+                self.links.push({text:text,href:url,active:false,routeMatch:text,click:function(){}});
         };
         self.addDropDown = function(text,links){
                 self.dropdowns.push({text:text,links:links});

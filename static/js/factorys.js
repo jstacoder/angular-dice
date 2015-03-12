@@ -30,6 +30,19 @@
     }
   ]);
 
+  app.factory('User',['$resource',function($resource){
+    return $resource('/api/users/:id',{id:"@id"},
+            {
+                query : {
+                    isArray:true
+                }
+            });
+  }]);
+
+  app.factory('users',['User',function(User){
+      return User.query();
+  }]);
+
   //app.constant('URL_BASE', 'http://174.140.227.137:3333/');
   app.factory('URL_BASE',['$location',function($location){
         return function(){
@@ -90,24 +103,37 @@
     var self = this;
 
     self.players = [];
+    self.playerNum = 0;
+    self.lastIdx = null;
+    self.updateLastIdx = function(){
+        self.lastIdx = self.playerNum-1;
+    };
     var add = function(){
+        self.playerNum += 1;
+        self.updateLastIdx()
         return self.players.push({name:"Comp:"+self.players.length,score:0});
     };
     var remove = function(){
+        self.playerNum -= 1;
+        self.updateLastIdx()
         self.players.splice(self.players.length-1,1);
     };
 
     var _get = function(){
         return self.players;
     };
+    var getLast = function(){
+        return self.players[self.lastIdx];
+    };
 
     return {
         _get:_get,
         add:add,
-        remove:remove
+        remove:remove,
+        getLast:getLast
     };
   });
-  app.factory('turn',['comp',function(comp) {
+  app.factory('turn',['comp','$rootScope',function(comp,$rootScope) {
     var self;
     self = this;
     self.players = [
@@ -155,6 +181,9 @@
         updateFullScore: function() {
           this.score += this.tempscore;
           return this.tempscore = 0;
+        },
+        human:function(){
+            return false;
         }
       });
     };
@@ -187,12 +216,17 @@
       }
       return self.score;
     };
+    self.clearAll = function(){
+        self.players = [];
+    };
     self.updateName();
     self.updateScore();
     self.addCompPlayers();
     self.switchData = function(name) {
       var player;
       player = self.getByName(name);
+      $rootScope.$broadcast('player.change',player);
+      $rootScope.$emit('player.change',player);
       self.updateName(player.name);
       return self.updateScore(player.score);
     };

@@ -1,3 +1,8 @@
+<style>
+    .msgbox{
+        height:300px;
+    }
+</style>
  <div ng-controller="DiceCtrl as ctrl" >
     <div class=row>
         <alert
@@ -58,6 +63,7 @@
                 </span>
             </div>
             <hr />
+            <div class=col-md-4>
             <table class="table table-bordered table-hover">
                 <thead>
                     <tr>
@@ -77,16 +83,27 @@
                             ng-bind="player.realscore"
                        ></td>
                 </tr>
+                            <tr
+                                ng-repeat="comp in ctrl.compPlayers"
+                            >
+                                <td
+                                    ng-bind="comp.name"
+                                    ng-click="ctrl.switchPlayer(comp)"
+                                    ></td>
+                                <td
+                                    ng-bind="comp.score"
+                               ></td>
+                        </tr>
                 </tbody>
             </table>
+            </div>
+            <!--
             <span ng-repeat="held in ctrl.saved track by $index" ng-bind="held.value" class="die inline-block"></span>
-
-            <span ng-bind="ctrl.currentRoll"></span>
+            `               -->
+            <!--<span ng-bind="ctrl.currentRoll"></span>-->
             <br />
-            <span ng-repeat="die in currentChoice.result track by $index" ng-bind="die"></span>
+            <!--<span ng-repeat="die in currentChoice.result track by $index" ng-bind="die"></span>-->
             <button ng-click="ctrl.compTurn({'name':'hank','score':100})">comp</button>
-        </div>
-        <div ng-controller="ModalDemoCtrl">
                 <script type="text/ng-template" id="myasidewindow.html">
                         <div class="aside fade" tabindex="-1" role="dialog"
                             ng-class="{'in':animate}"
@@ -119,10 +136,25 @@
             <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
             </div>
     </script>
-    
-    <button class="btn btn-default" ng-click="ctrl.open()">Open me!</button>
-    <button class="btn btn-default" ng-click="ctrl.open('lg')">Large modal</button>
-    <button class="btn btn-default" ng-click="ctrl.open('sm')">Small modal</button>
+    <!--
+    <button class="btn btn-default" bs-modal="modals[0]">Open me!</button>
+    <button class="btn btn-default" bs-modal="modals[1]">Large modal</button>
+    <button class="btn btn-default" bs-modal="modals[2]">Small modal</button>
     <div ng-show="selected">Selection from a modal: {{ selected }}</div>
+    -->
+    <div class=col-md-8>
+        <div class="panel panel-default">
+            <div class=form-group>
+                <div class="msgbox" style="border:solid 1px black;border-radius:5px;">
+                </div>
+                <div class=input-group>
+                    <input class="form-control" />
+                    <span class="input-group-btn">
+                        <button class="btn btn-default">Send</button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
