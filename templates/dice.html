@@ -54,21 +54,24 @@
                     </p>
                 </div>
             </div>
+    <hr />
+    <div class="panel panel-default">x</div>
         </div>
     </div>
-    <span ng-show="false">Held</span>
-    </div>
-    <hr />
-    <div class="btn-group">
-        <button class="btn btn-primary" ng-click="ctrl.roll()">roll</button>
-        <button class="btn btn-default" ng-click="ctrl.reset(false)">reset</button>
-        <button 
-            ng-click="ctrl.reset(true)" 
-            class="btn btn-default" 
-            ng-class="{ disabled : ctrl.disableClass(ctrl.current.player.tempscore+ctrl.current.player.score+ctrl.current.player.realscore) }">keep score</button>
-    </div>
-            <hr />
-            <div class=col-md-4>
+</div>
+    <div class=row>
+        <div class=col-md-9>
+            <div class="btn-group">
+                <button class="btn btn-primary" ng-click="ctrl.roll()">roll</button>
+                <button class="btn btn-default" ng-click="ctrl.reset(false)">reset</button>
+                <button 
+                    ng-click="ctrl.reset(true)" 
+                    class="btn btn-default" 
+                    ng-class="{ disabled : ctrl.disableClass(ctrl.current.player.tempscore+ctrl.current.player.score+ctrl.current.player.realscore) }"
+                >keep score</button>
+            </div>
+        </div>
+        <div class=col-md-3>
             <table class="table table-bordered table-hover">
                 <thead>
                     <tr>
@@ -101,13 +104,13 @@
                         </tr>
                 </tbody>
             </table>
+        </div>            
+    </div>
+        <span ng-repeat="held in ctrl.saved track by $index">
+            <div class="die inline-block">
+                <p ng-bind="held.value" class="inner-die-value"></p>
             </div>
-            
-            <span ng-repeat="held in ctrl.saved track by $index">
-                <div class="die inline-block">
-                    <p ng-bind="held.value" class="inner-die-value"></p>
-                </div>
-            </span>
+        </span>
             
             <!--<span ng-bind="ctrl.currentRoll"></span>-->
             <br />
@@ -151,6 +154,8 @@
     <button class="btn btn-default" bs-modal="modals[2]">Small modal</button>
     <div ng-show="selected">Selection from a modal: {{ selected }}</div>
     -->
+    </div>
+    <!--
     <div class=col-md-8>
         <div class="panel panel-default">
             <div class=form-group>
@@ -165,5 +170,6 @@
             </div>
         </div>
     </div>
+    -->
 </div>
 
