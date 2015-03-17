@@ -181,7 +181,7 @@
                 'choice', 'score', 
                 '$scope','currentChoice',
                 '$interval','$modal',
-                'historyService','alertService'                
+                'historyService','alertService',
     function DiceCtrl( $q,navLinks,
                         $location,$log,
                         $timeout,$rootScope, 
