@@ -369,7 +369,7 @@
           $scope.test = function(){
             return 'this is a test';
           };
-          var txt = self.current.player.name + ',<br/>This turm you kept '+addScore+' points,<br/>giving you {{ test() }} a total of:<br/><p class=lead>'+self.current.player.realscore+' points</p>';
+          var txt = self.current.player.name + ',<br/>This turm you kept '+addScore+' points,<br/>a total of:<br/><p class=lead>'+self.current.player.realscore+' points</p>';
           $modal({scope:$scope,title:title,content:txt,show:true,html:true});
           $rootScope.currentplayer = self.current.player
         }
@@ -491,10 +491,11 @@
         self.holding = [];
         self.savedNums = [];
         self.currentRoll = [];
-        if (!self.dice.length || self.dice.length === 0) self.makeRoll();
         tmp = [];
+        var sentinal = false;
         angular.forEach(self.dice, function(itm) {
           if (!itm.held) {
+            sentinal = true;
             itm.value = roll();
             self.currentRoll.push(itm.value);
             self.fastRoll(itm,itm.value);
@@ -503,6 +504,7 @@
             return self.saveItem(itm);
           }
         });
+        if (!self.dice.length || self.dice.length === 0 || !sentinal) self.makeRoll();
         if (tmp.length && tmp.length > 0) {
           self.results.push(tmp);
           angular.forEach(tmp, function(item) {
