@@ -1,29 +1,6 @@
 (function() {
   'use strict';
-    var app = angular.module('dice.controllers.app',['dice.modal.controller','dice.factory.app','service.app','ui.bootstrap.modal']);
-
-    app.controller('NavCtrl',['navLinks',function(navLinks){
-      var self = this;
-        navLinks.addLink('Home','/');
-        navLinks.addLink('Play','/play');
-        navLinks.addLink('Scores','/scores');
-        navLinks.addLink('Help','/help');
-        navLinks.addDropDown('Testdd',[
-          {text:'link1',href:'ccx'},
-          {text:'link2',href:'cccom'},
-          {text:'link3',href:'ccm'},
-          {text:'link4',href:'cicom'},
-      ]);
-      navLinks.addDropDown('Account Info',[
-          {text:'Profile',href:'ccxom'},
-          {text:'Settings',href:'ccccom'},
-          {text:'Management',href:'cccom'},
-          {text:'Logout',href:'cicom'},
-      ]);
-      navLinks.setActive(0);
-      self.navLinks = navLinks.getLinks(true);
-      self.dropdowns = navLinks.getLinks()
-    }]);
+    var app = angular.module('dice.controllers.app',['dice.modal.controller','dice.nav.controller','dice.factory.app','service.app','ui.bootstrap.modal']);
 
     app.controller('PickCtrl', [
     'User','$route','navLinks','turn','comp','$scope','$rootScope','users','$q','storageService',
