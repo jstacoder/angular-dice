@@ -259,7 +259,7 @@
 
   app.factory('disabler', function() {
     return function(itm, held) {
-      if (itm >= 1000 && !held) {
+      if (itm >= 1000) {
         return false;
       } else {
         return true;
