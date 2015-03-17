@@ -260,9 +260,9 @@
   app.factory('disabler', function() {
     return function(itm, held) {
       if (itm >= 1000 && !held) {
-        return '';
+        return false;
       } else {
-        return 'disabled ';
+        return true;
       }
     };
   });

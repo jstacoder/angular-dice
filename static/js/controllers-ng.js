@@ -173,14 +173,24 @@
 
 
   app.controller('DiceCtrl', [
-    '$q','navLinks','$location','$log','$timeout',
-    '$rootScope', 'disabler', 'Die', 'roll', 'turn', 
-    'choice', 'score', '$scope','currentChoice',
-    '$interval','$modal', 
-    function DiceCtrl(
-        $q,navLinks,$location,$log,$timeout,
-        $rootScope, dis, Die, roll, turn, 
-        choice, score, $scope,cc,$interval,$modal
+                '$q','navLinks',
+                '$location','$log',
+                '$timeout','$rootScope',
+                'disabler', 'Die', 
+                'roll', 'turn', 
+                'choice', 'score', 
+                '$scope','currentChoice',
+                '$interval','$modal',
+                'historyService','alertService'                
+    function DiceCtrl( $q,navLinks,
+                        $location,$log,
+                        $timeout,$rootScope, 
+                        dis, Die, 
+                        roll, turn, 
+                        choice, score, 
+                        $scope,cc,
+                        $interval,$modal,
+                        historyService,alertService
     ){
       navLinks.setActive(1);
       var self;
@@ -189,6 +199,8 @@
       $scope.modals.push({});
       $scope.modals[0].content = 'Som,e modal text Batch <h2>honkey</h2>';
       $scope.modals[0].title = 'My title!!';
+
+      
 
       $rootScope.$on('player.change',function(evt,player){
             if(!player.human()){
@@ -264,8 +276,12 @@
       $rootScope.currentplayer = {};
       $rootScope.currentChoice = {};
       $rootScope.closeable = true;
-      self.close = function(){
-        self.alerts = [];
+      self.closeAlert = function(alertItm){
+        //return true;
+        return alertService.closeAlert(alertItm);
+      };
+      $scope.closeAlert = function(Alert){
+        return self.close(Alert);
       };
       self.curr = {};
       self.canKeep = true;
@@ -386,7 +402,7 @@
       self.updateSavedNums = function() {
         return self.savedNums = self.getSavedNums();
       };
-      self.alerts = [];
+      self.alerts = $rootScope.alerts;//[{type:'success',msg:'just testing'}];
 
       self.addAlert = function(type,msg,nonAuto){
             self.alerts.push(
@@ -523,11 +539,11 @@
                }
         };
       var counter = 0;
-      $interval(function(){
+      /*$interval(function(){
           counter += 1;
           console.log('polling, counter :'+counter);
           
-      },5000);
+      },5000);*/
       return self.reset();
     }]);
 }).call(this);
