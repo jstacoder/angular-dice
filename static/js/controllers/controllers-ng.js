@@ -1,17 +1,7 @@
 (function() {
   'use strict';
-    var app = angular.module('dice.controllers.app',['dice.factory.app','service.app','ui.bootstrap.modal']);
+    var app = angular.module('dice.controllers.app',['dice.modal.controller','dice.factory.app','service.app','ui.bootstrap.modal']);
 
-    app.controller('ModalCtrl',['$scope','$rootScope','turn',function($scope,$rootScope,turn){
-        var self = this;
-        self.new_player = {};
-        self.new_player.name = '';
-        self.addPlayer = function() {
-            console.log('adding ', self.new_player.name);
-            turn.addPlayer(self.new_player.name);
-
-      };
-    }]);
     app.controller('NavCtrl',['navLinks',function(navLinks){
       var self = this;
         navLinks.addLink('Home','/');

@@ -6,6 +6,9 @@
         display:block;
         text-align:center;
     }
+    .inner-die-value {
+        margin: -13px 0px 0px -5px;
+    }
 </style>
  <div ng-controller="DiceCtrl as ctrl" >
      <div class=row>
@@ -100,7 +103,11 @@
             </table>
             </div>
             
-            <span ng-repeat="held in ctrl.saved track by $index" ng-bind="held.value" class="die inline-block"></span>
+            <span ng-repeat="held in ctrl.saved track by $index">
+                <div class="die inline-block">
+                    <p ng-bind="held.value" class="inner-die-value"></p>
+                </div>
+            </span>
             
             <!--<span ng-bind="ctrl.currentRoll"></span>-->
             <br />
