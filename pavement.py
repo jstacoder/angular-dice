@@ -2,9 +2,15 @@ from paver import easy,options
 from paver.easy import path,sh
 from paver.options import Bunch
 from jsmin import jsmin
-from uglipyjs import compile
+from redis import Redis
+try:
+    from uglipyjs import compile as uglify
+except:
+    uglify = None
 import json
 import os
+
+cache = Redis()
 
 testbunch = Bunch(
         x='y',
@@ -12,6 +18,8 @@ testbunch = Bunch(
         css_indir='css/src',
         cssout='vendor/css',
 )
+
+SET_ARG = dict(ex=7200)
 
 options.test = testbunch
 
@@ -28,6 +36,9 @@ options.assets = Bunch(
 easy.environment.ttt = 'hnmmm'
 easy.environment.assets = ''
 
+
+cache_set = lambda key,val: cache.set(key,val,**SET_ARG)
+cache_get = lambda key: cache.get(key)
 
 def get_version():
     import json
@@ -47,7 +58,7 @@ def set_version(version):
 def work_on(options,branch=None):
     if branch is None:
         branch = options.work_on.branch
-    os.environ['GIT_BRANCH'] = branch
+    cache_set('PAVER:GIT:BRANCH',branch)
     easy.info('Switching to branch {}'.format(branch))
     sh('git checkout -b {}'.format(branch))
 
@@ -64,7 +75,7 @@ def finish(branch=None):
 )
 def done(options,branch=None):
     if branch is None:
-        branch = os.environ.get('GIT_BRANCH',False) or options.done.branch 
+        branch = cache_get('PAVER:GIT:BRANCH') or options.done.branch 
     finish(branch)
 
     
