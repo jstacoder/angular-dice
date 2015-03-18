@@ -2,8 +2,8 @@ import flask
 import json
 import commands
 import os
-import sqlalchemy as sa
-from sqlalchemy.ext.declarative import declarative_base
+from flask_admin import Admin
+from flask_admin.contrib.sqla.view import ModelView
 
 PHP_CMD = 'php -f index.php'
 
@@ -19,6 +19,33 @@ def set_php_env(value):
     os.environ['REQUEST_URI'] = value
 
 app = flask.Flask(__name__)
+admin = Admin(app,template_mode="bootstrap3")
+
+from models import User,Score,Game
+
+class UserAdminView(ModelView):
+
+    inline_models = [Game,Score]
+
+    def __init__(self,*args,**kwargs):
+        super(UserAdminView,self).__init__(User,User._session,*args,**kwargs)
+
+class ScoreAdminView(ModelView):
+
+    inline_models = [Game,User]
+
+    def __init__(self,*args,**kwargs):
+        super(ScoreAdminView,self).__init__(Score,Score._session,*args,**kwargs)
+
+class GameAdminView(ModelView):
+    inline_models = [User,Score]
+
+    def __init__(self,*args,**kwargs):
+        super(GameAdminView,self).__init__(Game,Game._session,*args,**kwargs)
+
+admin.add_view(UserAdminView())
+admin.add_view(ModelView(Score,Score._session))
+admin.add_view(ModelView(Game,Game._session))
 
 @app.route('/score')
 @app.route('/dice_choice')
