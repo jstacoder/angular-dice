@@ -74,7 +74,7 @@ class Phlask extends Ham
         return $this->layout;
     }
 
-    public function render($view,$data=array())
+    public function render($view,$data=array(),$layout=null)
     {
         $content = $this->_twig_env->render($view,$data);
         return $content;
