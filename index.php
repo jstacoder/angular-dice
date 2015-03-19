@@ -1,7 +1,7 @@
 <?php
 require_once 'phlask.php';
 
-$app = new Phlask('dieApp',false,false);
+$app = new Phlask('dieApp',false,false,false);
 
 
 $check_for_doubles = function($roll){

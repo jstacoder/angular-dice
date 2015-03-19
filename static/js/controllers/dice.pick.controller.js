@@ -58,9 +58,10 @@ app.controller('PickCtrl',
                 }
             };
             self.addToUsers = function(name){
-                var user = new User();
+                var user = new User(),
+		    score = 0;
                 user.name = name;
-                user.selected = true;
+                user.selected = true;		
                 user.$save();
                 return users.push({
                     name:name,

@@ -1,10 +1,21 @@
 import sqlalchemy as sa
+from flask import current_app
 from sqlalchemy.orm import relationship,backref,sessionmaker,scoped_session
 from sqlalchemy.ext.declarative import declarative_base,declared_attr
 from flask_xxl.basemodels import classproperty
 import inflection
+import os
+os.environ['DATABASE_URL'] =  'sqlite:///test.db'
 
-def make_base(url):
+def make_base(url=None):
+    if url is None:
+        import os
+        if os.environ.get('DATABASE_URL',False):
+            url = os.environ.get('DATABASE_URL')
+        else:
+            url = current_app.config.get('SQLALCHEMY_DATABASE_URI',None)
+    if url is None:
+        raise IOError('need to supply a database url')
     engine = sa.create_engine(url,echo=True)
     session = scoped_session(sessionmaker(bind=engine))()
     base = declarative_base()
@@ -13,7 +24,7 @@ def make_base(url):
     base._session = session
     return base
 
-Model = make_base('sqlite:///test.db')
+Model = make_base()
 
 class BaseModel(Model):
     __abstract__ = True

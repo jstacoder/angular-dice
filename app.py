@@ -21,6 +21,9 @@ def set_php_env(value):
 app = flask.Flask(__name__)
 admin = Admin(app,template_mode="bootstrap3")
 
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+os.environ['DATABASE_URI'] =  'sqlite:///test.db'
+
 from models import User,Score,Game
 
 class UserAdminView(ModelView):
@@ -80,4 +83,5 @@ def index():
     return flask.render_template('index.html')
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0',port=4444,debug=True)
+
+    app.run(host='0.0.0.0',debug=True)
