@@ -83,5 +83,7 @@ def index():
     return flask.render_template('index.html')
 
 if __name__ == "__main__":
-
-    app.run(host='0.0.0.0',debug=True)
+    import os
+    port = os.environ.get('PORT',None) or 4444
+    port = int(port)
+    app.run(debug=True,port=port)
