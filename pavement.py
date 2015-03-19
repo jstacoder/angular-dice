@@ -66,6 +66,7 @@ def finish(branch=None):
     if branch is not None:
         sh('git checkout master')
         sh('git merge {}'.format(branch))
+        sh('git branch -d {}'.format(branch))
         increment_version()
 
 @easy.task
