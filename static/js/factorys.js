@@ -167,7 +167,8 @@
         return false;
       });
     };
-    self.addPlayer = function(name) {
+    self.addPlayer = function(name,is_human) {
+      var ih = is_human;
       if (self.name === '') self.name = name;
       return self.players.push({
         name: name,
@@ -183,7 +184,7 @@
           return this.tempscore = 0;
         },
         human:function(){
-            return false;
+            return ih ? false : true;
         }
       });
     };

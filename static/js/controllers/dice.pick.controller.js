@@ -111,7 +111,7 @@ app.controller('PickCtrl',
                 return self.updateComp();
             };
             self.addPlayer = function(name,comp){
-                turn.addPlayer(name);
+                turn.addPlayer(name,!comp);
                 if(!comp){
                     if(!self.allplayers.filter(function(player){ return player.name == name;}).length){
                         self.addToUsers(name);

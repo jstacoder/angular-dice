@@ -27,10 +27,9 @@ app.controller('DiceCtrl', [
       $scope.modals[0].content = 'Som,e modal text Batch <h2>honkey</h2>';
       $scope.modals[0].title = 'My title!!';
 
-      
-
-      $rootScope.$on('player.change',function(evt,player){
-            if(!player.human()){
+      $scope.$on('player.change',function(player){
+            console.log('changing to player ',player.name);
+            if(player.human()){
                 return self.compTurn(player);
             }
       });
@@ -133,7 +132,7 @@ app.controller('DiceCtrl', [
       };
       self.players = turn.players;
       self.addPlayer = function(name) {
-        turn.addPlayer(name);
+        turn.addPlayer(name,true);
         return self["new"].name = '';
       };
       self.switchPlayer = function() {
@@ -160,6 +159,7 @@ app.controller('DiceCtrl', [
       };
       self.getCurrent = function() {
         self.updateCurrent();
+        console.log('current player ',self.current.player);
         return self.current.player;
       };
       self.hold = function(die) {
@@ -196,9 +196,10 @@ app.controller('DiceCtrl', [
           $scope.test = function(){
             return 'this is a test';
           };
-          var txt = self.current.player.name + ',<br/>This turm you kept '+addScore+' points,<br/>a total of:<br/><p class=lead>'+self.current.player.realscore+' points</p>';
+          var txt = self.current.player.name + ',<br/>This turn you kept '+addScore+' points,<br/>a total of:<br/><p class=lead>'+self.current.player.realscore+' points</p>';
           $modal({scope:$scope,title:title,content:txt,show:true,html:true});
           $rootScope.currentplayer = self.current.player
+          self.current.player.human() ? false : $timeout(function(){self.compTurn();},2000);
         }
         self.current.player.score = 0;
         self.current.player.tempscore = 0;
@@ -302,8 +303,8 @@ app.controller('DiceCtrl', [
           self.compTurn = function(player){
               var def = $q.defer();
               $scope.current = {};
-              $scope.current.player = player.name;
-              $scope.current.score = player.score;
+              $scope.current.player = player ? player.name : turn.getCurrent().name;
+              $scope.current.score = player ? player.score : turn.getCurrent().score;
               var thisTurn = false;
               self.rolling();
       };
@@ -364,7 +365,6 @@ app.controller('DiceCtrl', [
                         intt = undefined;
                    };
                    self.addFailure('Turn over');
-                   $timeout(function(){self.compTurn();},2000);
                }
         };
       var counter = 0;
