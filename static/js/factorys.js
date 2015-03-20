@@ -140,7 +140,7 @@
     ];
 
     self.getNextPlayer = function(){
-        return self.players[1] || self.players[0];
+        return self.players.length >= 2 ? self.players[1] : self.players[0];
     };
 
     self._in_players = function(compPlayer){

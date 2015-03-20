@@ -27,3 +27,13 @@ redisApp.factory('redisCallService',['$http','redisUrlService',function redisCal
         );
     };
 }]);
+redisApp.service('redis',['redisCallService','$q',function redis(redisCallService,$q){
+    var self = this;
+
+    self.get = function(key){
+        return redisCallService('GET',[key]);
+    };
+    self.set = function(key,val,ex){
+        return redisCallService('SET',[key,val,exp]);
+    };
+}]);
