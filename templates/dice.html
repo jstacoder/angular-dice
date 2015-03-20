@@ -16,6 +16,9 @@
         margin-left:-11px;
         margin-top:17px;
     }
+    .dicecol {
+        min-height:155px;
+    }
 </style>
  <div ng-controller="DiceCtrl as ctrl" >
      <div class=row>
@@ -46,7 +49,7 @@
         </div>
     </div>
     <div class=row>
-        <div class="col-md-offset-2 col-md-6">
+        <div class="col-md-offset-2 col-md-6 dicecol">
             <div class=row>
                 <div ng-repeat="item in ctrl.dice track by $index" class="col-md-2 inline-block fade-in">
                     Die: <span ng-bind="item.dienum" ></span>
@@ -67,11 +70,6 @@
             </div>
         </div>
     <hr />
-    <div 
-        class="panel panel-default col-md-2" 
-        ng-repeat="x in ctrl.dice track by $index" 
-        ng-show="currentChoice.clean_choice[$index] != 0"><p>{{ x.dienum }}</p></div>
-    </div>
 </div>
     <div class=row>
         <div class=col-md-9>
@@ -103,19 +101,21 @@
                             ></td>
                         <td
                             ng-bind="player.realscore"
-                       ></td>
-                </tr>
-                            <tr
-                                ng-repeat="comp in ctrl.compPlayers"
-                            >
-                                <td
-                                    ng-bind="comp.name"
-                                    ng-click="ctrl.switchPlayer(comp)"
-                                    ></td>
-                                <td
-                                    ng-bind="comp.score"
-                               ></td>
-                        </tr>
+                         >
+                         </td>
+                    </tr>
+                    <tr
+                        ng-repeat="comp in ctrl.compPlayers"
+                    ><td
+                        ng-bind="comp.name"
+                        ng-click="ctrl.switchPlayer(comp)"
+                     >
+                     </td>
+                     <td
+                            ng-bind="comp.score"
+                      >
+                      </td>
+                    </tr>
                 </tbody>
             </table>
         </div>            
