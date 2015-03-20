@@ -298,8 +298,8 @@ app.controller('DiceCtrl', [
                         });
                     }    
             });
-        },2200);
-    };    
+          },2200);
+       };    
           self.compTurn = function(player){
               var def = $q.defer();
               $scope.current = {};
@@ -364,7 +364,7 @@ app.controller('DiceCtrl', [
                         $interval.cancel(intt);
                         intt = undefined;
                    };
-                   self.addFailure('Turn over');
+                   self.addFailure('Turn over\nNow its '+ turn.getNextPlayer().name +'\'s turn');
                }
         };
       var counter = 0;

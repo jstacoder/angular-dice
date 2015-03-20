@@ -139,6 +139,10 @@
     self.players = [
     ];
 
+    self.getNextPlayer = function(){
+        return self.players[1] || self.players[0];
+    };
+
     self._in_players = function(compPlayer){
         var check = function(ele,idx,arr){
             return !angular.equals(ele,compPlayer);
