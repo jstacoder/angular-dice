@@ -2,6 +2,7 @@ import flask
 import json
 import commands
 import os
+from flask_script import Manager, commands
 from flask_admin import Admin
 from flask_admin.contrib.sqla.view import ModelView
 
@@ -21,8 +22,13 @@ def set_php_env(value):
 app = flask.Flask(__name__)
 admin = Admin(app,template_mode="bootstrap3")
 
+manager = Manager(app)
+manager.add_command('urls',commands.ShowUrls())
+manager.default_command = 'urls'
+
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
-os.environ['DATABASE_URI'] =  'sqlite:///test.db'
+os.environ['DATABASE_URL'] =  'sqlite:///test.db' if not os.environ.get('DATABASE_URL',False) else os.environ.get('DATABASE_URL')                                                            
 
 from models import User,Score,Game
 
@@ -86,4 +92,5 @@ if __name__ == "__main__":
     import os
     port = os.environ.get('PORT',None) or 4444
     port = int(port)
+    manager.run()
     app.run(host='0.0.0.0',debug=True,port=port)
