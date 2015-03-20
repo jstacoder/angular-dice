@@ -2,7 +2,7 @@ import flask
 import json
 import commands
 import os
-from flask_script import Manager, commands
+from flask_script import Manager, commands as mgr_cmds
 from flask_admin import Admin
 from flask_admin.contrib.sqla.view import ModelView
 
@@ -23,7 +23,7 @@ app = flask.Flask(__name__)
 admin = Admin(app,template_mode="bootstrap3")
 
 manager = Manager(app)
-manager.add_command('urls',commands.ShowUrls())
+manager.add_command('urls',mgr_cmds.ShowUrls())
 manager.default_command = 'urls'
 
 
