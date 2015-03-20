@@ -364,7 +364,8 @@ app.controller('DiceCtrl', [
                         $interval.cancel(intt);
                         intt = undefined;
                    };
-                   self.addFailure('Turn over\nNow its '+ turn.getNextPlayer().name +'\'s turn');
+                   var ish = turn.getNextPlayer().human();
+                   self.addFailure('Turn over\nNow its '+ turn.getNextPlayer().name +'\'s turn\nhe\'s '+ (ish ? '' : 'not';)+' human');
                }
         };
       var counter = 0;
