@@ -122,7 +122,7 @@ app.controller('PickCtrl',
                 return self["new"].name = "";
             };
             $rootScope.addPlayer = function(name){
-                self.addPlayer(name);
+                self.addPlayer(name,false);
                 $scope.showModal = false;
                 self.newplayer.name = "";
                 name = "";
