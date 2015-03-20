@@ -36,7 +36,6 @@ options.assets = Bunch(
 easy.environment.ttt = 'hnmmm'
 easy.environment.assets = ''
 
-
 cache_set = lambda key,val: cache.set(key,val,**SET_ARG)
 cache_get = lambda key: cache.get(key)
 
@@ -48,8 +47,6 @@ def set_version(version):
     print 'setting version to {}'.format(version)
     with open('version.json','w') as f:
         f.write(json.dumps(dict(version=version)))
-
-
 
 @easy.task
 @easy.cmdopts([
@@ -79,10 +76,6 @@ def done(options,branch=None):
         branch = cache_get('PAVER:GIT:BRANCH') or options.done.branch 
     finish(branch)
 
-    
-
-
-
 @easy.task
 def version():
     easy.info(get_version())
@@ -104,8 +97,6 @@ def increment_version():
     else:
         s += 1
     set_version('.'.join(map(str,[l,m,s])))
-    
-
 
 @easy.task
 def print_test(arg=None):
@@ -162,17 +153,15 @@ def show(args,ttt):
     easy.call_task('concat')
     print get_version()
 
-
 @easy.task
 def minify():
     options.assets.js_files = map(lambda x: ((x[0],jsmin(x[1]))),options.assets.js_files)
-
 
 @easy.task
 def uglify():
     for fle,data in options.assets.js_files:
         try:
-            options.assets.js_files[options.assets.js_files.index((fle,data))] = (fle,compile(data))
+            options.assets.js_files[options.assets.js_files.index((fle,data))] = (fle,uglify(data))
         except:
             print fle
             #options.assets.js_files = map(compile,options.assets.js_files)

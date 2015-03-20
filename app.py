@@ -92,5 +92,5 @@ if __name__ == "__main__":
     import os
     port = os.environ.get('PORT',None) or 4444
     port = int(port)
-    manager.run()
+    #manager.run()
     app.run(host='0.0.0.0',debug=True,port=port)
