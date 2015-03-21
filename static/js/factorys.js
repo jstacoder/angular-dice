@@ -1,5 +1,8 @@
 (function() {
   'use strict';
+
+  var forEach = angular.forEach;
+
   var app = angular.module('dice.factory.app',[]);
   app.factory('roll', function() {
     return function() {
@@ -29,6 +32,28 @@
       };
     }
   ]);
+
+  app.factory('userFactory',['User','users',function userFactory(User,users){
+    return function(name,computer){
+        var o = {};
+        o.isHuman = function(){
+            return computer ? false : true;
+        };
+        var inUsers = false;
+        forEach(users,function(itm){
+            if(name == itm.name){
+                inUsers = true;
+            }
+        });
+        if(!inUsers){
+            o.name = name;
+            o.score = 0;
+            users.push(o);
+            return o;
+        }
+        return false;
+    };
+  }]);
 
   app.factory('User',['$resource',function($resource){
     return $resource('/api/users/:id',{id:"@id"},

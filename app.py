@@ -1,10 +1,17 @@
 import flask
+from flask import session
 import json
 import commands
 import os
+import base64
+import hashlib
+import time
 from flask_script import Manager, commands as mgr_cmds
 from flask_admin import Admin
 from flask_admin.contrib.sqla.view import ModelView
+import pdb
+
+alg = 'sha256'
 
 PHP_CMD = 'php -f index.php'
 
@@ -21,6 +28,8 @@ def set_php_env(value):
 
 app = flask.Flask(__name__)
 admin = Admin(app,template_mode="bootstrap3")
+
+
 
 manager = Manager(app)
 manager.add_command('urls',mgr_cmds.ShowUrls())
@@ -87,6 +96,33 @@ def serve_template(name):
 @app.route('/play')
 def index():
     return flask.render_template('index.html')
+
+def make_token():
+    return hashlib.new(alg,str(time.time())).hexdigest()
+
+def encode_token(tkn):
+    return base64.b64encode(tkn)
+
+def check_token(serverTkn,dataTkn):
+    try:
+        return base64.b64decode(dataTkn) == serverTkn
+    except:
+        return false
+
+@app.before_first_request
+def add_token_to_session():
+    token = make_token()
+    session.token = None
+    session.token = token
+
+@app.after_request
+def add_cooke(res):
+    try:
+        res.set_cookie('sess_token',encode_token(session.token))
+    except AttributeError:
+        pass
+    return res
+
 
 if __name__ == "__main__":
     import os
