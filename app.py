@@ -6,6 +6,7 @@ import os
 import base64
 import hashlib
 import time
+from sqlalchemy.util import KeyedTuple
 from flask_script import Manager, commands as mgr_cmds
 from flask_admin import Admin
 from flask_admin.contrib.sqla.view import ModelView
@@ -39,7 +40,8 @@ manager.default_command = 'urls'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 os.environ['DATABASE_URL'] =  'sqlite:///test.db' if not os.environ.get('DATABASE_URL',False) else os.environ.get('DATABASE_URL')                                                            
 
-from models import User,Score,Game
+from models import User,Score,Game,Model
+app.extensions['sqlalchemy'] = KeyedTuple((Model,),labels=['db'])
 
 class UserAdminView(ModelView):
 
