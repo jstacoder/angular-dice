@@ -92,6 +92,7 @@
                 <a
                     ng-repeat="player in ctrl.allplayers"
                     class=list-group-item
+                    ng-click="ctrl.addPlayer(player.name)" 
                 >
                 <span 
                     class="label label-danger pull-right"
@@ -103,7 +104,6 @@
                     ></span>
                 </span>
                     <p
-                        ng-click="ctrl.addPlayer(player.name)" 
                         ng-bind="player.name"
                     >
                     </p>

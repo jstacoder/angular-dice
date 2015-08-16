@@ -21,7 +21,9 @@ def make_base(url=None):
     base = declarative_base()
     base.metadata.bind = engine
     base._engine = engine
+    base.engine = engine
     base._session = session
+    base.session = session
     return base
 
 Model = make_base()
@@ -48,6 +50,7 @@ class BaseModel(Model):
 class User(BaseModel):
 
     name = sa.Column(sa.String(255),unique=True)
+    is_human = sa.Column(sa.Boolean,default=True)
     scores = relationship('Score',lazy='dynamic',cascade='all,delete')
     games = relationship('Game',secondary='users_games')
 
@@ -70,7 +73,7 @@ class Game(BaseModel):
 
 class Score(BaseModel):
     win = sa.Column(sa.Boolean,default=False)
-    score = sa.Column(sa.String)
+    score = sa.Column(sa.String(255))
     user_id = sa.Column(sa.Integer,sa.ForeignKey('users.id'))
     user = relationship('User')
     game_id = sa.Column(sa.Integer,sa.ForeignKey('games.id'))
