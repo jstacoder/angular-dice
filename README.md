@@ -1,16 +1,17 @@
-to run yourself just do
+to run yourself just create a virtualenv
+```bash
+$ virtualenv venv
 ```
-pip install -r requirements.txt
+then install the dependencies
+```bash
+$ ./venv/bin/pip install -r requirements.txt
 ```
-
-then 
-
+then run 
+```bash
+$ ./venv/bin/honcho start
 ```
-python app.py
-```
-
-or just check out the [demo](http://angular-dice.herokuapp.com)
+or just check out the [demo](http://angular-dice.herokuapp.com/play)
 
 
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/jstacoder/angular-dice/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
 
