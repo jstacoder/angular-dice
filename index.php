@@ -84,7 +84,7 @@ $score_three_or_more = function($roll) use ($check_for_three_or_more) {
                     $tmp = $base * $arr[0];
                     break;
                 case 4:
-                    $tmp = ($base*$arr[0]) * 2;
+                    $tmp = ($base * $arr[0]) * 2;
                     break;
                 case 5:
                     $tmp = (($base * $arr[0]) * 2) * 2;
@@ -125,21 +125,19 @@ function processRtn($res){
         if(!is_array($v)){
             $rtn[] = $v;
         } else {
-            foreach($v as $x=>$z){
-                if(!is_array($z)){
-                    $rtn[] =  $z;
-                }
-            }
-
+            $rtn = array_merge($rtn,processRtn($v));
         }
     }
     return $rtn;
 }
 
-$choose_roll = function($roll) use
-    ($check_for_doubles,$check_for_strait,
-     $check_for_three_or_more,$check_for_fives,
-     $check_for_ones){
+$choose_roll = function($roll) use (
+                                        $check_for_doubles,
+                                        $check_for_strait,
+                                        $check_for_three_or_more,
+                                        $check_for_fives,
+                                        $check_for_ones
+                                    ){
         if($res = $check_for_doubles($roll) || $res = $check_for_strait($roll)){
             return $roll;
         }
@@ -162,7 +160,6 @@ $choose_roll = function($roll) use
             }
         }
         return processRtn($res);
-        #return @array_map(function($arg){return (int)$arg;},@array_merge(...$res));
 };
 
 class BaseAIChooser {
