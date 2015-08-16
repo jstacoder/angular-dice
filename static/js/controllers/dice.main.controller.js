@@ -197,9 +197,10 @@ app.controller('DiceCtrl', [
             return 'this is a test';
           };
           var txt = '<p>'+self.current.player.name + ',</p><p>This turn you kept '+addScore+' points,</p><p>a total of:</p><p class=lead>'+self.current.player.realscore+' points</p>';
-          $modal({scope:$scope,title:title,content:txt,show:true,html:true});
-          $rootScope.currentplayer = self.current.player
-          self.current.player.human() ? false : $timeout(function(){self.compTurn();},2000);
+          $modal({scope:$scope,title:title,content:txt,show:true,html:true}).$promise.then(function(){
+              $rootScope.currentplayer = self.current.player
+              self.current.player.human() ? false : $timeout(function(){self.compTurn();},2000);
+          });
         }
         self.current.player.score = 0;
         self.current.player.tempscore = 0;
