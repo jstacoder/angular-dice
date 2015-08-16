@@ -19,8 +19,11 @@
     .dicecol {
         min-height:155px;
     }
+    .tall-row {
+        height:100px;
+    }   
 </style>
- <div ng-controller="DiceCtrl as ctrl" >
+ <div class=tall-row ng-controller="DiceCtrl as ctrl" >
      <div class=row>
          <div class=col-md-12>
             <alert 
@@ -31,7 +34,7 @@
            </alert>
         </div>
      </div>
-        <button ng-click="ctrl.addAlert('warning','ahhh msgs')">add</button>
+     <!--<button ng-click="ctrl.addAlert('warning','ahhh msgs')">add</button>-->
     <div class=row>
         <div class="col-md-2">
                 <p class=lead>Currently Rolling:</p>
@@ -75,11 +78,18 @@
         <div class=col-md-9>
             <div class="btn-group">
                 <button class="btn btn-primary" ng-click="ctrl.roll()">roll</button>
-                <button class="btn btn-default" ng-click="ctrl.reset(false)">reset</button>
+                <!--<button class="btn btn-default" ng-click="ctrl.reset(false)">reset</button>-->
                 <button 
                     ng-click="ctrl.reset(true)" 
                     class="btn btn-default" 
-                    ng-class="{ disabled : ctrl.disableClass(ctrl.current.player.tempscore+ctrl.current.player.score+ctrl.current.player.realscore) }"
+                    ng-class="{ 
+                                disabled : 
+                                ctrl.disableClass(
+                                        ctrl.current.player.tempscore + 
+                                        ctrl.current.player.score + 
+                                        ctrl.current.player.realscore
+                                ) 
+                              }"
                 >keep score</button>
             </div>
         </div>
@@ -162,28 +172,5 @@
             <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
             </div>
     </script>
-    <!--
-    <button class="btn btn-default" bs-modal="modals[0]">Open me!</button>
-    <button class="btn btn-default" bs-modal="modals[1]">Large modal</button>
-    <button class="btn btn-default" bs-modal="modals[2]">Small modal</button>
-    <div ng-show="selected">Selection from a modal: {{ selected }}</div>
-    -->
-    </div>
-    <!--
-    <div class=col-md-8>
-        <div class="panel panel-default">
-            <div class=form-group>
-                <div class="msgbox" style="border:solid 1px black;border-radius:5px;">
-                </div>
-                <div class=input-group>
-                    <input class="form-control" />
-                    <span class="input-group-btn">
-                        <button class="btn btn-default">Send</button>
-                    </span>
-                </div>
-            </div>
-        </div>
-    </div>
-    -->
 </div>
 
