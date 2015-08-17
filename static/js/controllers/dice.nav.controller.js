@@ -19,8 +19,8 @@ app.controller('NavCtrl',['navLinks',function NavCtrl(navLinks){
             href:'/scores'
         },
         {
-            text:'Scores',
-            href:'/scores'
+            text:'Help',
+            href:'/help'
         }
     ];
     self.drops = [
